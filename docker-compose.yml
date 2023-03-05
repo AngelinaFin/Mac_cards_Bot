@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+
+  db:
+    container_name: database
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
+    env_file:
+      - ".env"
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  cardbot:
+    container_name: cards
+    build: .
+    volumes:
+      - .:/src
+    command: python app.py
+    restart: always
+    network_mode: "host"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    env_file:
+      - ".env"
